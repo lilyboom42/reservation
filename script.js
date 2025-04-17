@@ -50,10 +50,18 @@ function validateTime(time) {
 }
 
 function validateAvalability(date, time) {
-  const reservationDate = new Date(date + " " + time);
+  const reservationDate = new Date(date + "T" + time);
+  const reservationEnd = new Date(reservationDate.getTime() + 60 * 60 * 1000); 
+
   const isReserved = reservations.some((reservation) => {
-    const resDate = new Date(reservation.date + " " + reservation.time);
-    return resDate.getTime() === reservationDate.getTime();
+    const resDate = new Date(reservation.date + "T" + reservation.time);
+    const resEnd = new Date(resDate.getTime() + 60 * 60 * 1000);
+    return (
+      (reservationDate >= resDate && reservationDate < resEnd) ||
+      (reservationEnd > resDate && reservationEnd <= resEnd) ||
+      (reservationDate <= resDate && reservationEnd >= resEnd)
+    );
+    // return resDate.getTime() === reservationDate.getTime();
   });
   const availabilityError = document.getElementById("availabilityError");
 if (isReserved) {
@@ -81,6 +89,7 @@ function addReservation(name, date, time, participants) {
     name: name,
     date: date,
     time: time,
+    duration: 60,
     participants: participants,
   };
   reservations.push(reservation);
@@ -97,6 +106,12 @@ function loadReservations() {
   const savedReservations = localStorage.getItem("reservations");
   if (savedReservations) {
     reservations = JSON.parse(savedReservations);
+    reservations.forEach(reservation => {
+        if (!reservation.duration) {
+            reservation.duration = 60; // Default duration if not set
+        }
+    });
+    saveReservations(); 
   }
 }
 
@@ -137,7 +152,12 @@ function updateReservationsTable() {
     row.appendChild(dateCell);
 
     const timeCell = document.createElement("td");
-    timeCell.textContent = reservation.time;
+    const startTime = reservation.time;
+    const startDate = new Date(`2000-01-01T${startTime}`);
+    const endDate = new Date(startDate.getTime() + (reservation.duration || 60) * 60 * 1000);
+    const endTime = endDate.toTimeString().slice(0, 5);
+
+    timeCell.textContent = `${startTime} - ${endTime}`;
     row.appendChild(timeCell);
 
     const participantsCell = document.createElement("td");

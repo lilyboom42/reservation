@@ -23,6 +23,12 @@
             </div>
             
             <div class="form-group">
+                <label for="time">Heure de début:</label>
+                <input type="time" id="time" name="time" required min="09:00" max="18:00">
+                <small>Tous les rendez-vous ont une durée fixe d'une heure.</small>
+              </div>
+            
+            <div class="form-group">
                 <label for="time">Heure du rendez-vous</label>
                 <input type="time" id="time" required>
                 <div id="timeError" class="error"></div>
