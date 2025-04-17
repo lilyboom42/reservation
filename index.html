@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Réservation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Formulaire de Réservation</h1>
+        <form id="reservationForm">
+            <div class="form-group">
+                <label for="name">Nom du client</label>
+                <input type="text" id="name" required>
+                <div id="nameError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date du rendez-vous</label>
+                <input type="date" id="date" required>
+                <div id="dateError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="time">Heure du rendez-vous</label>
+                <input type="time" id="time" required>
+                <div id="timeError" class="error"></div>
+                <div id="availabilityError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="participants">Nombre de participants</label>
+                <input type="number" id="participants" min="0" max="10" required>
+                <div id="participantsError" class="error"></div>
+            </div>
+            
+            <button type="submit">Réserver</button>
+        </form>
+        
+        <div id="reservationsTableContainer">
+            <h2>Réservations</h2>
+            <table id="reservationsTable">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Participants</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reservationList">
+                    <!-- Les réservations seront ajoutées ici dynamiquement -->
+                </tbody>
+            </table>
+            <div id="noReservations" class="no-reservations">Aucune réservation pour le moment</div>
+        </div>
+        
+        <div class="calendar">
+            <div class="calendar-header">
+                <div class="calendar-nav">
+                    <button id="prevMonth">&lt;</button>
+                </div>
+                <div class="calendar-title" id="currentMonth">Avril 2025</div>
+                <div class="calendar-nav">
+                    <button id="nextMonth">&gt;</button>
+                </div>
+            </div>
+            <div class="calendar-days" id="calendarDays">
+                <!-- Les jours seront ajoutés ici dynamiquement -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
