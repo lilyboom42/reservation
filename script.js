@@ -5,7 +5,7 @@ let currentYear = currentDate.getFullYear();
 const daysContainer = document.getElementById("calendarDays");
 
 function dateString(date) {
-  return date.toISOString().split("T")[0];
+    return date.toISOString().split("T")[0];
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -86,7 +86,7 @@ function addReservation(name, date, time, participants) {
   reservations.push(reservation);
   saveReservations();
   updateReservationsTable();
-  updateCalendar(date, time);
+  updateCalendar();
 }
 
 function saveReservations() {
@@ -161,7 +161,7 @@ function updateReservationsTable() {
 function setMinDate() {
     const today = new Date().toISOString().split("T")[0];
     document.getElementById("date").setAttribute("min", today);
-  }
+}
   
 
 function setupCalendar() {
@@ -178,7 +178,7 @@ function setupCalendar() {
 function getReservedDates() {
     const dates = reservations.map((r) => r.date);
     return [...new Set(dates)]; 
-  }
+}
   
 function updateCalendar() {
   const daysContainer = document.getElementById("calendarDays");
@@ -212,7 +212,7 @@ function updateCalendar() {
     dayElement.textContent = i;
 
     const dateObj = new Date(currentYear, currentMonth, i);
-    const dateString = dateString(dateObj);
+    const formattedDate = dateString(dateObj);
     if (
       dateObj.getDate() === today.getDate() &&
       dateObj.getMonth() === today.getMonth() &&
@@ -224,32 +224,46 @@ function updateCalendar() {
       dayElement.classList.add("disabled");
     }
     else {
-        if (reservedDates.includes(dateString)) {
-      dayElement.classList.add("reserved");
+        if (reservedDates.includes(formattedDate)) {
+          dayElement.classList.add("reserved");
+        }
+        dayElement.addEventListener("click", function() {
+            document.getElementById("date").value = dateString(dateObj);
+        });
     }
-    dayElement.addEventListener("click",function(){
-        document.getElementById("date").value = dateString(dateObj);
-    });
-  }
     daysContainer.appendChild(dayElement);
-    }
+  }
 }
-function handleFormSubmit(event) {
-    event.preventDefault();
+
+function navigateMonth(change) {
+  currentMonth += change;
   
-    const name = document.getElementById("name").value.trim();
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-    const participants = parseInt(document.getElementById("participants").value);
-  
-    const isNameValid = validateName(name);
-    const isTimeValid = validateTime(time);
-    const isAvailable = validateAvalability(date, time);
-    const isParticipantsValid = validateParticipants(participants);
-  
-    if (isNameValid && isTimeValid && isAvailable && isParticipantsValid) {
-      addReservation(name, date, time, participants);
-      document.getElementById("reservationForm").reset();
-    }
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  } else if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
   }
   
+  updateCalendar();
+}
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
+  const participants = parseInt(document.getElementById("participants").value);
+
+  const isNameValid = validateName(name);
+  const isTimeValid = validateTime(time);
+  const isAvailable = validateAvalability(date, time);
+  const isParticipantsValid = validateParticipants(participants);
+
+  if (isNameValid && isTimeValid && isAvailable && isParticipantsValid) {
+    addReservation(name, date, time, participants);
+    document.getElementById("reservationForm").reset();
+  }
+}
